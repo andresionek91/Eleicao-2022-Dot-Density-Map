@@ -48,5 +48,4 @@ for chunk in pd.read_csv(
         InvocationType="Event",
         Payload=json.dumps(payload),
     )
-    time.sleep(1)
-    break
+    time.sleep(2)
