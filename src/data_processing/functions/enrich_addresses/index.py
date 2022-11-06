@@ -1,6 +1,7 @@
 import json
 
 from typing import List
+from urllib.parse import quote
 
 import backoff
 import boto3
@@ -39,7 +40,7 @@ class Secoes(BaseModel):
 @backoff.on_exception(backoff.expo, requests.RequestException, max_time=20)
 def get_osm_data(query: str) -> dict:
     """Make a request to Photon OSM"""
-    response = requests.get(f"https://photon.komoot.io/api/?q={query}")
+    response = requests.get(f"https://photon.komoot.io/api/?q={quote(query)}")
     return response.json()
 
 
@@ -64,7 +65,9 @@ def handler(event: Secoes, context: LambdaContext) -> None:
     enriched_items = ""
 
     for item in event.items:
+
         try:
+            # Search with full address
             query = f"{item.endereco_local_votacao} {item.municipio_local_votacao} {item.uf_local_votacao}"
             enriched = parse_osm_data(get_osm_data(query))
             enriched = {**item.dict(), **enriched, "enrichment quality": 3}
@@ -73,7 +76,8 @@ def handler(event: Secoes, context: LambdaContext) -> None:
 
         if not enriched:
             try:
-                query = f"{item.endereco_local_votacao.split(',')[0]}, {item.municipio_local_votacao}, {item.uf_local_votacao}"
+                # Search with name of place + city and state
+                query = f"{item.nome_local_votacao}, {item.municipio_local_votacao}, {item.uf_local_votacao}"
                 enriched = parse_osm_data(get_osm_data(query))
                 enriched = {**item.dict(), **enriched, "enrichment quality": 2}
             except (KeyError, IndexError):
@@ -81,9 +85,19 @@ def handler(event: Secoes, context: LambdaContext) -> None:
 
         if not enriched:
             try:
-                query = f"{item.municipio_local_votacao}, {item.uf_local_votacao}, BRASIL"
+                # Search with first part of address + city and state
+                query = f"{item.endereco_local_votacao.split(',')[0]}, {item.municipio_local_votacao}, {item.uf_local_votacao}"
                 enriched = parse_osm_data(get_osm_data(query))
                 enriched = {**item.dict(), **enriched, "enrichment quality": 1}
+            except (KeyError, IndexError):
+                enriched = None
+
+        if not enriched:
+            try:
+                # Search with city and state
+                query = f"{item.municipio_local_votacao}, {item.uf_local_votacao}, BRASIL"
+                enriched = parse_osm_data(get_osm_data(query))
+                enriched = {**item.dict(), **enriched, "enrichment quality": 0}
             except (KeyError, IndexError):
                 return
 

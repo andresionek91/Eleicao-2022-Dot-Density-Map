@@ -1,3 +1,29 @@
 {
-    "failed_checks": []
+    "failed_checks": [
+        {
+            "file": "/Eleicoes2022-DataProcessing.template.json",
+            "findings": [
+                {
+                    "resource": "AWS::Lambda::Function.EnrichAddressesFunctionC08D25D3",
+                    "check_ids": [
+                        "CKV_AWS_115",
+                        "CKV_AWS_117",
+                        "CKV_AWS_173"
+                    ]
+                },
+                {
+                    "resource": "AWS::S3::Bucket.EnrichmentDataBucketE4E77DBB",
+                    "check_ids": [
+                        "CKV_AWS_18",
+                        "CKV_AWS_19",
+                        "CKV_AWS_21",
+                        "CKV_AWS_53",
+                        "CKV_AWS_54",
+                        "CKV_AWS_55",
+                        "CKV_AWS_56"
+                    ]
+                }
+            ]
+        }
+    ]
 }
