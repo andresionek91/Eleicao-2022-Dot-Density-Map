@@ -99,7 +99,7 @@ def handler(event: Secoes, context: LambdaContext) -> None:
                 enriched = parse_osm_data(get_osm_data(query))
                 enriched = {**item.dict(), **enriched, "enrichment quality": 1}
             except (KeyError, IndexError):
-                return
+                continue
 
         json_enriched = json.dumps(enriched) + "\n"
 
