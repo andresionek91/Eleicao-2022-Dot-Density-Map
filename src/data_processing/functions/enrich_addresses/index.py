@@ -86,12 +86,21 @@ def handler(event: Secoes, context: LambdaContext) -> None:
         if not enriched:
             try:
                 # Search with first part of address + city and state
+                query = f"{item.nome_local_votacao}, " f"{item.municipio_local_votacao}, {item.uf_local_votacao}"
+                enriched = parse_osm_data(get_osm_data(query))
+                enriched = {**item.dict(), **enriched, "enrichment quality": 2}
+            except (KeyError, IndexError):
+                enriched = None
+
+        if not enriched:
+            try:
+                # Search with first part of address + city and state
                 query = (
                     f"{item.endereco_local_votacao.split(',')[0]}, "
                     f"{item.municipio_local_votacao}, {item.uf_local_votacao}"
                 )
                 enriched = parse_osm_data(get_osm_data(query))
-                enriched = {**item.dict(), **enriched, "enrichment quality": 2}
+                enriched = {**item.dict(), **enriched, "enrichment quality": 1}
             except (KeyError, IndexError):
                 enriched = None
 
@@ -100,7 +109,7 @@ def handler(event: Secoes, context: LambdaContext) -> None:
                 # Search with city and state
                 query = f"{item.municipio_local_votacao}, {item.uf_local_votacao}, BRASIL"
                 enriched = parse_osm_data(get_osm_data(query))
-                enriched = {**item.dict(), **enriched, "enrichment quality": 1}
+                enriched = {**item.dict(), **enriched, "enrichment quality": 0}
             except (KeyError, IndexError):
                 logger.warning(
                     f"Did not find any geo data for query: {item.municipio_local_votacao}, {item.uf_local_votacao}, BRASIL"
