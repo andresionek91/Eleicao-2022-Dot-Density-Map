@@ -3,6 +3,7 @@ import logging
 import os
 
 from typing import List
+from urllib.parse import quote
 
 import backoff
 import boto3
@@ -45,7 +46,7 @@ def get_osm_data(query: str) -> dict:
 
     logger.info(f"Making request with query: {query}")
 
-    response = requests.get(f"https://photon.komoot.io/api/?q={query}")
+    response = requests.get(f"https://photon.komoot.io/api/?q={quote(query)}")
     response.raise_for_status()
 
     logger.info(response.text)
@@ -76,7 +77,7 @@ def handler(event: Secoes, context: LambdaContext) -> None:
 
         try:
             # Search with full address
-            query = f"{item.endereco_local_votacao}%2C%20{item.municipio_local_votacao}%2C%20{item.uf_local_votacao}"
+            query = f"{item.endereco_local_votacao}, {item.municipio_local_votacao}, {item.uf_local_votacao}"
             enriched = parse_osm_data(get_osm_data(query))
             enriched = {**item.dict(), **enriched, "enrichment quality": 3}
         except (KeyError, IndexError):
@@ -86,8 +87,8 @@ def handler(event: Secoes, context: LambdaContext) -> None:
             try:
                 # Search with first part of address + city and state
                 query = (
-                    f"{item.endereco_local_votacao.split(',')[0]}"
-                    f"%2C%20{item.municipio_local_votacao}%2C%20{item.uf_local_votacao}"
+                    f"{item.endereco_local_votacao.split(',')[0]}, "
+                    f"{item.municipio_local_votacao}, {item.uf_local_votacao}"
                 )
                 enriched = parse_osm_data(get_osm_data(query))
                 enriched = {**item.dict(), **enriched, "enrichment quality": 2}
@@ -97,7 +98,7 @@ def handler(event: Secoes, context: LambdaContext) -> None:
         if not enriched:
             try:
                 # Search with city and state
-                query = f"{item.municipio_local_votacao}%2C%20{item.uf_local_votacao}%2C%20BRASIL"
+                query = f"{item.municipio_local_votacao}, {item.uf_local_votacao}, BRASIL"
                 enriched = parse_osm_data(get_osm_data(query))
                 enriched = {**item.dict(), **enriched, "enrichment quality": 1}
             except (KeyError, IndexError):
