@@ -99,6 +99,9 @@ def handler(event: Secoes, context: LambdaContext) -> None:
                 enriched = parse_osm_data(get_osm_data(query))
                 enriched = {**item.dict(), **enriched, "enrichment quality": 1}
             except (KeyError, IndexError):
+                logger.warning(
+                    f"Did not find any geo data for query: {item.municipio_local_votacao}, {item.uf_local_votacao}, BRASIL"
+                )
                 continue
 
         json_enriched = json.dumps(enriched) + "\n"
