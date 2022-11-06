@@ -237,6 +237,14 @@ optional = false
 python-versions = ">=3.6.1"
 
 [[package]]
+name = "chardet"
+version = "5.0.0"
+description = "Universal encoding detector for Python 3"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[[package]]
 name = "charset-normalizer"
 version = "2.1.1"
 description = "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet."
@@ -359,6 +367,14 @@ description = "Distribution utilities"
 category = "dev"
 optional = false
 python-versions = "*"
+
+[[package]]
+name = "distro"
+version = "1.8.0"
+description = "Distro - an OS platform information API"
+category = "main"
+optional = false
+python-versions = ">=3.6"
 
 [[package]]
 name = "exceptiongroup"
@@ -644,7 +660,7 @@ setuptools = "*"
 name = "numpy"
 version = "1.23.4"
 description = "NumPy is the fundamental package for array computing with Python."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.8"
 
@@ -663,7 +679,7 @@ pyparsing = ">=2.0.2,<3.0.5 || >3.0.5"
 name = "pandas"
 version = "1.5.1"
 description = "Powerful data structures for data analysis, time series, and statistics"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.8"
 
@@ -879,7 +895,7 @@ six = ">=1.5"
 name = "pytz"
 version = "2022.6"
 description = "World timezone definitions, modern and historical"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -1001,6 +1017,35 @@ python-versions = ">=3.8"
 
 [package.dependencies]
 pbr = ">=2.0.0,<2.1.0 || >2.1.0"
+
+[[package]]
+name = "tabula-py"
+version = "2.5.1"
+description = "Simple wrapper for tabula-java, read tables from PDF into DataFrame"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+distro = "*"
+numpy = "*"
+pandas = ">=0.25.3"
+
+[package.extras]
+dev = ["black", "flake8", "isort", "mypy", "pytest"]
+doc = ["sphinx", "sphinx-rtd-theme"]
+test = ["pytest"]
+
+[[package]]
+name = "tabulate"
+version = "0.9.0"
+description = "Pretty-print tabular data"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.extras]
+widechars = ["wcwidth"]
 
 [[package]]
 name = "termcolor"
@@ -1154,7 +1199,7 @@ setuptools = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "c610c42c1f27a588982a1be3975eb8dfbbc81da952bf9af772ef42c56916b217"
+content-hash = "df60898ba815b6c63da17220f34aa0245a75147482d738886824b250ed8453c1"
 
 [metadata.files]
 argcomplete = [
@@ -1306,6 +1351,10 @@ cfgv = [
     {file = "cfgv-3.3.1-py2.py3-none-any.whl", hash = "sha256:c6a0883f3917a037485059700b9e75da2464e6c27051014ad85ba6aaa5884426"},
     {file = "cfgv-3.3.1.tar.gz", hash = "sha256:f5a830efb9ce7a445376bb66ec94c638a9787422f96264c98edc6bdeed8ab736"},
 ]
+chardet = [
+    {file = "chardet-5.0.0-py3-none-any.whl", hash = "sha256:d3e64f022d254183001eccc5db4040520c0f23b1a3f33d6413e099eb7f126557"},
+    {file = "chardet-5.0.0.tar.gz", hash = "sha256:0368df2bfd78b5fc20572bb4e9bb7fb53e2c094f60ae9993339e8671d0afb8aa"},
+]
 charset-normalizer = [
     {file = "charset-normalizer-2.1.1.tar.gz", hash = "sha256:5a3d016c7c547f69d6f81fb0db9449ce888b418b5b9952cc5e6e66843e9dd845"},
     {file = "charset_normalizer-2.1.1-py3-none-any.whl", hash = "sha256:83e9a75d1911279afd89352c68b45348559d1fc0506b054b346651b5e7fee29f"},
@@ -1417,6 +1466,10 @@ decli = [
 distlib = [
     {file = "distlib-0.3.6-py2.py3-none-any.whl", hash = "sha256:f35c4b692542ca110de7ef0bea44d73981caeb34ca0b9b6b2e6d7790dda8f80e"},
     {file = "distlib-0.3.6.tar.gz", hash = "sha256:14bad2d9b04d3a36127ac97f30b12a19268f211063d8f8ee4f47108896e11b46"},
+]
+distro = [
+    {file = "distro-1.8.0-py3-none-any.whl", hash = "sha256:99522ca3e365cac527b44bde033f64c6945d90eb9f769703caaec52b09bbd3ff"},
+    {file = "distro-1.8.0.tar.gz", hash = "sha256:02e111d1dc6a50abb8eed6bf31c3e48ed8b0830d1ea2a1b78c61765c2513fdd8"},
 ]
 exceptiongroup = [
     {file = "exceptiongroup-1.0.1-py3-none-any.whl", hash = "sha256:4d6c0aa6dd825810941c792f53d7b8d71da26f5e5f84f20f9508e8f2d33b140a"},
@@ -1783,6 +1836,14 @@ snowballstemmer = [
 stevedore = [
     {file = "stevedore-4.1.0-py3-none-any.whl", hash = "sha256:3b1cbd592a87315f000d05164941ee5e164899f8fc0ce9a00bb0f321f40ef93e"},
     {file = "stevedore-4.1.0.tar.gz", hash = "sha256:02518a8f0d6d29be8a445b7f2ac63753ff29e8f2a2faa01777568d5500d777a6"},
+]
+tabula-py = [
+    {file = "tabula-py-2.5.1.tar.gz", hash = "sha256:d6dc3f6e1d420df98d2952e90709c6fff65eb28418e7a17d7e5df4b7dd86d197"},
+    {file = "tabula_py-2.5.1-py3-none-any.whl", hash = "sha256:0f03c0e591ed21d5f45d80351714c6727a447ff6dc0b3adfe723a92d4c7d74ef"},
+]
+tabulate = [
+    {file = "tabulate-0.9.0-py3-none-any.whl", hash = "sha256:024ca478df22e9340661486f85298cff5f6dcdba14f3813e8830015b9ed1948f"},
+    {file = "tabulate-0.9.0.tar.gz", hash = "sha256:0095b12bf5966de529c0feb1fa08671671b3368eec77d7ef7ab114be2c068b3c"},
 ]
 termcolor = [
     {file = "termcolor-2.0.1-py3-none-any.whl", hash = "sha256:7e597f9de8e001a3208c4132938597413b9da45382b6f1d150cff8d062b7aaa3"},

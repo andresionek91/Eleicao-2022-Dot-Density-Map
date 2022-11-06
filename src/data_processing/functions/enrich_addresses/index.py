@@ -81,18 +81,18 @@ def handler(event: Secoes, context: LambdaContext) -> None:
             enriched = parse_osm_data(get_osm_data(query))
             enriched = {**item.dict(), **enriched, "enrichment quality": 3}
         except (KeyError, IndexError):
-            enriched = None
+            enriched = {}
 
-        if not enriched:
+        if not enriched.get("postcode", None):
             try:
                 # Search with first part of address + city and state
                 query = f"{item.nome_local_votacao}, " f"{item.municipio_local_votacao}, {item.uf_local_votacao}"
                 enriched = parse_osm_data(get_osm_data(query))
                 enriched = {**item.dict(), **enriched, "enrichment quality": 2}
             except (KeyError, IndexError):
-                enriched = None
+                enriched = {}
 
-        if not enriched:
+        if not enriched.get("postcode", None):
             try:
                 # Search with first part of address + city and state
                 query = (
@@ -102,9 +102,9 @@ def handler(event: Secoes, context: LambdaContext) -> None:
                 enriched = parse_osm_data(get_osm_data(query))
                 enriched = {**item.dict(), **enriched, "enrichment quality": 1}
             except (KeyError, IndexError):
-                enriched = None
+                enriched = {}
 
-        if not enriched:
+        if not enriched.get("postcode", None):
             try:
                 # Search with city and state
                 query = f"{item.municipio_local_votacao}, {item.uf_local_votacao}, BRASIL"
