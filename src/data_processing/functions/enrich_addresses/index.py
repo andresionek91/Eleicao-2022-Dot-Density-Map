@@ -41,7 +41,7 @@ class Secoes(BaseModel):
     items: List[Secao]
 
 
-@backoff.on_exception(backoff.expo, requests.RequestException, max_time=20)
+@backoff.on_exception(backoff.expo, requests.RequestException, max_time=15)
 def get_osm_data(query: str) -> dict:
     """Make a request to Photon OSM"""
     norm_query = quote(unidecode.unidecode(query))

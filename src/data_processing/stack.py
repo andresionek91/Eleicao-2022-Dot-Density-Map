@@ -42,7 +42,7 @@ class DataProcessingStack(cdk.Stack):
             handler="handler",
             entry="src/data_processing/functions/enrich_addresses",
             environment={"delivery_stream_name": self.delivery_stream.delivery_stream_name},
-            timeout=cdk.Duration.minutes(amount=15),
+            timeout=cdk.Duration.seconds(amount=30),
             memory_size=128,
             dead_letter_queue_enabled=True,
         )
