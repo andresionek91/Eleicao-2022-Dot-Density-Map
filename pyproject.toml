@@ -39,6 +39,13 @@ checkov = "^2.1.0"                     # IaC (Cloudformation) security checks
 chardet = "^5.0.0"                     # Required by checkov
 
 
+[tool.poetry.group.local]
+optional = true
+
+[tool.poetry.group.local.dependencies]
+pandas = "^1.5.1"
+
+
 [tool.poetry.group.lint]
 optional = true
 
