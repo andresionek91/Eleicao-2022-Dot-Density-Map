@@ -41,6 +41,7 @@ class DataProcessingStack(cdk.Stack):
             handler="handler",
             entry="src/data_processing/functions/enrich_addresses",
             environment={"delivery_stream_name": self.delivery_stream.delivery_stream_name},
+            timeout=cdk.Duration.minutes(amount=15),
         )
 
         self.delivery_stream.grant_put_records(self.function)

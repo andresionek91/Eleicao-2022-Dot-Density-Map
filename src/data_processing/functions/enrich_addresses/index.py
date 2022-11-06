@@ -1,4 +1,5 @@
 import json
+import logging
 
 from typing import List
 from urllib.parse import quote
@@ -16,6 +17,7 @@ from aws_lambda_powertools.utilities.typing import LambdaContext
 
 logger = Logger()
 tracer = Tracer()
+logging.basicConfig(level=logging.INFO)
 
 firehose = boto3.client("firehose")
 
@@ -40,7 +42,12 @@ class Secoes(BaseModel):
 @backoff.on_exception(backoff.expo, requests.RequestException, max_time=20)
 def get_osm_data(query: str) -> dict:
     """Make a request to Photon OSM"""
+    logger.info(f"Making request with query: {query}")
+
     response = requests.get(f"https://photon.komoot.io/api/?q={quote(query)}")
+    response.raise_for_status()
+
+    logger.info(response.text)
     return response.json()
 
 
