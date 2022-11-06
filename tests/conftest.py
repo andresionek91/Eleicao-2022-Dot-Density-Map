@@ -24,7 +24,7 @@ def dummy_app_fixture():
 def dummy_stack_fixture(dummy_app_fixture):
     return DataProcessingStack(
         scope=dummy_app_fixture,
-        id="TestGraphql",
+        id="TestDataProcessing",
         env=cdk.Environment(account=os.environ.get("AWS_ACCOUNT_ID", "0123456789"), region="us-east-1"),
         config=Config(),
     )
