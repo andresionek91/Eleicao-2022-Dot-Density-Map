@@ -4,7 +4,7 @@ import pytest
 @pytest.mark.parametrize(
     "type,count",
     [
-        ("AWS::S3::Bucket", 0),
+        ("AWS::S3::Bucket", 1),
     ],
 )
 def test_resource_count(type, count, template_fixture):
