@@ -29,14 +29,14 @@ repos:
         stages: [commit]
 
 
-  - repo: local
-    hooks:
-      - id: test
-        name: Run Tests
-        entry: poetry run python -m pytest
-        pass_filenames: false
-        language: system
-        stages: [push]
+  # - repo: local
+  #   hooks:
+  #     - id: test
+  #       name: Run Tests
+  #       entry: poetry run python -m pytest
+  #       pass_filenames: false
+  #       language: system
+  #       stages: [push]
 
 
   - repo: local
