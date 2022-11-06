@@ -17,7 +17,6 @@ for chunk in pd.read_csv(
     sep=";",
     header=0,
     chunksize=200,
-    nrows=10000,
 ):
     df = chunk
     df = df.rename(
