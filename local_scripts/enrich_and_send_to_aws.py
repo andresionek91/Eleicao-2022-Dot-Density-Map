@@ -17,7 +17,7 @@ for chunk in pd.read_csv(
     encoding="latin-1",
     sep=";",
     header=0,
-    chunksize=200,
+    chunksize=10,
 ):
     df = chunk
     df = df.rename(
@@ -48,4 +48,4 @@ for chunk in pd.read_csv(
         InvocationType="Event",
         Payload=json.dumps(payload),
     )
-    time.sleep(30)
+    time.sleep(1)
