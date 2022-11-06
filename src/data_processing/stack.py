@@ -25,7 +25,7 @@ class DataProcessingStack(cdk.Stack):
             buffering_interval=cdk.Duration.minutes(amount=10),
             buffering_size=cdk.Size.mebibytes(amount=20),
             compression=destinations.Compression.GZIP,
-            data_output_prefix="secoes_enriched_addresses/date=!{timestamp:yyyy}-!{timestamp:MM}-!{timestamp:dd}/",
+            data_output_prefix="secoes_enriched_addresses/",
             logging=True,
         )
 
