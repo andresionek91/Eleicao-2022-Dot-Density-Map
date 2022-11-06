@@ -1,4 +1,5 @@
 import json
+import time
 
 import boto3
 import pandas as pd
@@ -47,5 +48,4 @@ for chunk in pd.read_csv(
         InvocationType="Event",
         Payload=json.dumps(payload),
     )
-
-    break
+    time.sleep(30)

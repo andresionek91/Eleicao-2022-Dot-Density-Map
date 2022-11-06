@@ -1,5 +1,6 @@
 import aws_cdk as cdk
 
+from aws_cdk import aws_iam as iam
 from aws_cdk import aws_kinesisfirehose_alpha as firehose
 from aws_cdk import aws_kinesisfirehose_destinations_alpha as destinations
 from aws_cdk import aws_lambda as _lambda
@@ -43,6 +44,15 @@ class DataProcessingStack(cdk.Stack):
             environment={"delivery_stream_name": self.delivery_stream.delivery_stream_name},
             timeout=cdk.Duration.minutes(amount=15),
             memory_size=256,
+            dead_letter_queue_enabled=True,
+        )
+
+        self.function.add_to_role_policy(
+            statement=iam.PolicyStatement(
+                actions=["firehose:PutRecord", "firehose:PutRecordBatch"],
+                effect=iam.Effect.ALLOW,
+                resources=[self.delivery_stream.delivery_stream_arn],
+            )
         )
 
         self.delivery_stream.grant_put_records(self.function)

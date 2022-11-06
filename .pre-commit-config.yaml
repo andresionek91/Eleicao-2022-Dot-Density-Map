@@ -38,13 +38,6 @@ repos:
         language: system
         stages: [push]
 
-      - id: checkov
-        name: Run Checkov
-        entry: poetry run checkov --config-file .checkov --baseline .checkov.baseline
-        pass_filenames: false
-        language: system
-        stages: [push]
-
 
   - repo: local
     hooks:

@@ -31,14 +31,6 @@ pytest-cov = "^3.0.0" # Allows to run coverage of the project
 moto = "^3.1.6" # Allows for mocking of AWS services
 
 
-[tool.poetry.group.checkov]
-optional = true
-
-[tool.poetry.group.checkov.dependencies]
-checkov = "^2.1.0"                     # IaC (Cloudformation) security checks
-chardet = "^5.0.0"                     # Required by checkov
-
-
 [tool.poetry.group.local]
 optional = true
 

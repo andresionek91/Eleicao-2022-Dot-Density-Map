@@ -7,6 +7,7 @@ from urllib.parse import quote
 import backoff
 import boto3
 import requests
+import unidecode
 
 from aws_lambda_powertools import Logger
 from aws_lambda_powertools import Tracer
@@ -42,9 +43,10 @@ class Secoes(BaseModel):
 @backoff.on_exception(backoff.expo, requests.RequestException, max_time=20)
 def get_osm_data(query: str) -> dict:
     """Make a request to Photon OSM"""
-    logger.info(f"Making request with query: {query}")
+    norm_query = unidecode.unidecode(quote(query))
+    logger.info(f"Making request with query: {norm_query}")
 
-    response = requests.get(f"https://photon.komoot.io/api/?q={quote(query)}")
+    response = requests.get(f"https://photon.komoot.io/api/?q={quote(norm_query)}")
     response.raise_for_status()
 
     logger.info(response.text)
@@ -83,19 +85,10 @@ def handler(event: Secoes, context: LambdaContext) -> None:
 
         if not enriched:
             try:
-                # Search with name of place + city and state
-                query = f"{item.nome_local_votacao}, {item.municipio_local_votacao}, {item.uf_local_votacao}"
-                enriched = parse_osm_data(get_osm_data(query))
-                enriched = {**item.dict(), **enriched, "enrichment quality": 2}
-            except (KeyError, IndexError):
-                enriched = None
-
-        if not enriched:
-            try:
                 # Search with first part of address + city and state
                 query = f"{item.endereco_local_votacao.split(',')[0]}, {item.municipio_local_votacao}, {item.uf_local_votacao}"
                 enriched = parse_osm_data(get_osm_data(query))
-                enriched = {**item.dict(), **enriched, "enrichment quality": 1}
+                enriched = {**item.dict(), **enriched, "enrichment quality": 2}
             except (KeyError, IndexError):
                 enriched = None
 
@@ -104,7 +97,7 @@ def handler(event: Secoes, context: LambdaContext) -> None:
                 # Search with city and state
                 query = f"{item.municipio_local_votacao}, {item.uf_local_votacao}, BRASIL"
                 enriched = parse_osm_data(get_osm_data(query))
-                enriched = {**item.dict(), **enriched, "enrichment quality": 0}
+                enriched = {**item.dict(), **enriched, "enrichment quality": 1}
             except (KeyError, IndexError):
                 return
 
