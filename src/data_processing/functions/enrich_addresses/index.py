@@ -46,7 +46,7 @@ def get_osm_data(query: str) -> dict:
     norm_query = quote(unidecode.unidecode(query))
     logger.info(f"Making request with query: {norm_query}")
 
-    response = requests.get(f"https://photon.komoot.io/api/?q={quote(norm_query)}")
+    response = requests.get(f"https://photon.komoot.io/api/?q={norm_query}")
     response.raise_for_status()
 
     logger.info(response.text)
