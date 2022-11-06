@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 
 from typing import List
 from urllib.parse import quote
@@ -110,7 +111,7 @@ def handler(event: Secoes, context: LambdaContext) -> None:
 
     logger.info("Putting batch to firehose")
     firehose.put_record_batch(
-        DeliveryStreamName="string",
+        DeliveryStreamName=os.environ["delivery_stream_name"],
         Records=[
             {"Data": enriched_items.encode("latin-1")},
         ],
