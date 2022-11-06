@@ -26,8 +26,6 @@ firehose = boto3.client("firehose")
 class Secao(BaseModel):
     """Secao eleitoral"""
 
-    nr_zona: str
-    nr_secao: str
     nome_local_votacao: str
     endereco_local_votacao: str
     municipio_local_votacao: str

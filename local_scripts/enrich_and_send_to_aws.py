@@ -86,6 +86,7 @@ for idx, chunk in enumerate(
             "uf_local_votacao",
         ]
     ]
+
     records = df.to_dict("records")
     payload = {"items": records}
 
