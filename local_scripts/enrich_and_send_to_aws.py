@@ -49,3 +49,4 @@ for chunk in pd.read_csv(
         Payload=json.dumps(payload),
     )
     time.sleep(1)
+    break

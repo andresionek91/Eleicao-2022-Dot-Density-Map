@@ -43,7 +43,7 @@ class Secoes(BaseModel):
 @backoff.on_exception(backoff.expo, requests.RequestException, max_time=20)
 def get_osm_data(query: str) -> dict:
     """Make a request to Photon OSM"""
-    norm_query = unidecode.unidecode(quote(query))
+    norm_query = quote(unidecode.unidecode(query))
     logger.info(f"Making request with query: {norm_query}")
 
     response = requests.get(f"https://photon.komoot.io/api/?q={quote(norm_query)}")
@@ -105,6 +105,7 @@ def handler(event: Secoes, context: LambdaContext) -> None:
 
         enriched_items += json_enriched
 
+    logger.info("Putting batch to firehose")
     firehose.put_record_batch(
         DeliveryStreamName="string",
         Records=[
