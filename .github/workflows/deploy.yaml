@@ -1,0 +1,59 @@
+---
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Install and configure Poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          version: 1.2.2
+
+      - name: Set up Poetry cache
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+          cache: poetry
+
+      - name: Install Python Dependencies with Poetry
+        shell: bash
+        run: poetry install
+
+      - name: AWS CDK Setup
+        shell: bash
+        run: |
+          npm install -g aws-cdk@latest
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/GitHubActionsDeployerRole
+          role-session-name: GitHubActions-Deployment
+          aws-region: us-east-1
+
+      - name: AWS CDK Deploy
+        shell: bash
+        run: |
+          poetry run cdk deploy "Eleicoes2022-DataProcessing"
+        env:
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
