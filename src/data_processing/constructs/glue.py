@@ -31,8 +31,12 @@ class GlueConstruct(Construct):
             bucket=source_bucket,
             s3_prefix="secoes_enriched_addresses/",
             columns=[
-                glue.Column(name="nr_zona", type=glue.Schema.STRING),
-                glue.Column(name="nr_secao", type=glue.Schema.STRING),
+                glue.Column(
+                    name="nr_zona", type=glue.Schema.STRING
+                ),  # TODO: Remove if starting fresh, as it is not used anymore
+                glue.Column(
+                    name="nr_secao", type=glue.Schema.STRING
+                ),  # TODO: Remove if starting fresh, as it is not used anymore
                 glue.Column(name="nome_local_votacao", type=glue.Schema.STRING),
                 glue.Column(name="endereco_local_votacao", type=glue.Schema.STRING),
                 glue.Column(name="municipio_local_votacao", type=glue.Schema.STRING),

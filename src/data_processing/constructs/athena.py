@@ -27,7 +27,7 @@ class AthenaConstruct(Construct):
                     encryption_configuration=athena.CfnWorkGroup.EncryptionConfigurationProperty(
                         encryption_option="SSE_S3",
                     ),
-                    output_location=self.bucket.bucket_name,
+                    output_location=f"s3://{self.bucket.bucket_name}/eleicoes_workgroup/results",
                 )
             ),
         )
