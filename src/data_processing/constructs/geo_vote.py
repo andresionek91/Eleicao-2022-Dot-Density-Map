@@ -38,24 +38,6 @@ class GeoVoteConstruct(Construct):
             destinations=[destination],
         )
 
-        sk_learn_layer = _lambda.LayerVersion.from_layer_version_arn(
-            scope=self,
-            id="SkLearnLayer",
-            layer_version_arn="arn:aws:lambda:us-east-1:317456194246:layer:sklearn:1",
-        )
-
-        pandas_layer = _lambda.LayerVersion.from_layer_version_arn(
-            scope=self,
-            id="PandasLayer",
-            layer_version_arn="arn:aws:lambda:us-east-1:317456194246:layer:pandas:1",
-        )
-
-        synloc_layer = _lambda.LayerVersion.from_layer_version_arn(
-            scope=self,
-            id="SynlocLayer",
-            layer_version_arn="arn:aws:lambda:us-east-1:317456194246:layer:synloc:1",
-        )
-
         self.function = lambda_python.PythonFunction(
             scope=self,
             id="EnrichAddressesFunction",
@@ -66,7 +48,6 @@ class GeoVoteConstruct(Construct):
             timeout=cdk.Duration.minutes(amount=5),
             memory_size=512,
             dead_letter_queue_enabled=True,
-            layers=[pandas_layer],
         )
 
         self.function.add_to_role_policy(

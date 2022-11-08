@@ -55,7 +55,8 @@ def load_remote_project_archive(remote_bucket, remote_file, layer_name):
 
 
 load_remote_project_archive("s3://sionek-eleicoes-2022-enrichment/sklearn.zip", "sklearn.zip", "sklearn")
-load_remote_project_archive("s3://sionek-eleicoes-2022-enrichment/synloc.zip", "synloc", "synloc")
+load_remote_project_archive("s3://sionek-eleicoes-2022-enrichment/synloc.zip", "synloc.zip", "synloc")
+load_remote_project_archive("s3://sionek-eleicoes-2022-enrichment/pandas.zip", "pandas.zip", "pandas")
 
 
 class LocalFPCA(kNNResampler):
