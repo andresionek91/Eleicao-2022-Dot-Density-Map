@@ -63,12 +63,12 @@ repos:
         types: [file, python]
         stages: [commit]
 
-      - id: flake8
-        name: Run Flake8
-        entry: poetry run pflake8
-        language: system
-        types: [file, python]
-        stages: [commit]
+      # - id: flake8
+      #   name: Run Flake8
+      #   entry: poetry run pflake8
+      #   language: system
+      #   types: [file, python]
+      #   stages: [commit]
 
       - id: yamllint
         name: Run Yamllint
