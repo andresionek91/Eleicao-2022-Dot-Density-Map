@@ -38,16 +38,23 @@ class GeoVoteConstruct(Construct):
             destinations=[destination],
         )
 
+        layer = lambda_python.PythonLayerVersion(
+            scope=self,
+            id="Layer",
+            entry="src/data_processing/functions/geo_vote_layer",
+        )
+
         self.function = lambda_python.PythonFunction(
             scope=self,
             id="EnrichAddressesFunction",
-            runtime=_lambda.Runtime.PYTHON_3_9,
+            runtime=_lambda.Runtime.PYTHON_3_7,
             handler="handler",
             entry="src/data_processing/functions/geo_vote",
             environment={"delivery_stream_name": self.delivery_stream.delivery_stream_name},
             timeout=cdk.Duration.minutes(amount=5),
             memory_size=512,
             dead_letter_queue_enabled=True,
+            layers=[layer],
         )
 
         self.function.add_to_role_policy(
