@@ -38,23 +38,29 @@ class GeoVoteConstruct(Construct):
             destinations=[destination],
         )
 
-        layer = lambda_python.PythonLayerVersion(
+        sk_learn_layer = _lambda.LayerVersion.from_layer_version_arn(
             scope=self,
-            id="Layer",
-            entry="src/data_processing/layers/geo_vote",
+            id="SkLearnLayer",
+            layer_version_arn="arn:aws:lambda:us-east-1:446751924810:layer:python-3-8-scikit-learn-0-22-0:3",
+        )
+
+        pandas_layer = _lambda.LayerVersion.from_layer_version_arn(
+            scope=self,
+            id="PandasLayer",
+            layer_version_arn="arn:aws:lambda:us-east-1:770693421928:layer:Klayers-p38-pandas:9",
         )
 
         self.function = lambda_python.PythonFunction(
             scope=self,
             id="EnrichAddressesFunction",
-            runtime=_lambda.Runtime.PYTHON_3_7,
+            runtime=_lambda.Runtime.PYTHON_3_8,
             handler="handler",
             entry="src/data_processing/functions/geo_vote",
             environment={"delivery_stream_name": self.delivery_stream.delivery_stream_name},
             timeout=cdk.Duration.minutes(amount=5),
             memory_size=512,
             dead_letter_queue_enabled=True,
-            layers=[layer],
+            layers=[sk_learn_layer, pandas_layer],
         )
 
         self.function.add_to_role_policy(

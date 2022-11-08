@@ -1,6 +1,5 @@
 ---
 fail_fast: true
-exclude: src/data_processing/layers/
 
 repos:
 
