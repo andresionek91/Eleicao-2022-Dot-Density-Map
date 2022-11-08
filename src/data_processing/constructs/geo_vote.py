@@ -41,7 +41,7 @@ class GeoVoteConstruct(Construct):
         layer = lambda_python.PythonLayerVersion(
             scope=self,
             id="Layer",
-            entry="src/data_processing/functions/geo_vote_layer",
+            entry="src/data_processing/layers/geo_vote",
         )
 
         self.function = lambda_python.PythonFunction(
