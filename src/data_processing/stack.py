@@ -6,6 +6,7 @@ from constructs import Construct
 from src.data_processing.config import Config
 from src.data_processing.constructs.address_enrichment import AddressEnrichmentConstruct
 from src.data_processing.constructs.athena import AthenaConstruct
+from src.data_processing.constructs.dynamo_db import DynamoDbConstruct
 from src.data_processing.constructs.glue import GlueConstruct
 
 
@@ -27,7 +28,7 @@ class DataProcessingStack(cdk.Stack):
         )
 
         self.athena = AthenaConstruct(scope=self, id="Athena")
-
+        self.dynamodb = DynamoDbConstruct(scope=self, id="DynamoDb")
         self.glue = GlueConstruct(scope=self, id="EleicoesGlue", source_bucket=self.bucket)
 
         # Add tags to everything in this stack
