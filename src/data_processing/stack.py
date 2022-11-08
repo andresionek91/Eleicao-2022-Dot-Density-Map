@@ -7,6 +7,7 @@ from src.data_processing.config import Config
 from src.data_processing.constructs.address_enrichment import AddressEnrichmentConstruct
 from src.data_processing.constructs.athena import AthenaConstruct
 from src.data_processing.constructs.dynamo_db import DynamoDbConstruct
+from src.data_processing.constructs.geo_vote import GeoVoteConstruct
 from src.data_processing.constructs.glue import GlueConstruct
 
 
@@ -30,7 +31,9 @@ class DataProcessingStack(cdk.Stack):
         self.athena = AthenaConstruct(scope=self, id="Athena")
         self.dynamodb = DynamoDbConstruct(scope=self, id="DynamoDb")
         self.glue = GlueConstruct(scope=self, id="EleicoesGlue", source_bucket=self.bucket)
-
+        self.geo_vote = GeoVoteConstruct(
+            scope=self, id="EleicoesGlue", destination_bucket=self.bucket, geo_dynamo_db_table=self.dynamodb.table
+        )
         # Add tags to everything in this stack
         cdk.Tags.of(self).add(key="stack", value=self.stack_name)
         cdk.Tags.of(self).add(key="project", value="eleicoes-2022")
