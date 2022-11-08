@@ -139,7 +139,8 @@ exclude = [
 
 [tool.bandit]
 skips = [      # Choose the bandit errors to ignore globally
-  "B101"       # Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+  "B101",      # Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+  "B108"       # Probable insecure usage of temp file/directory.
 ]
 exclude_dirs = [
   ".venv",

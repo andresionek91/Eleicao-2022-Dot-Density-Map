@@ -1,6 +1,9 @@
+import io
 import json
 import logging
 import os
+import sys
+import zipfile
 
 import boto3
 import pandas as pd
@@ -21,6 +24,38 @@ logging.basicConfig(level=logging.INFO)
 
 dynamodb = boto3.resource("dynamodb")
 firehose = boto3.resource("firehose")
+
+
+def load_remote_project_archive(remote_bucket, remote_file, layer_name):
+
+    # Puts the project files from S3 in /tmp and adds to path
+    project_folder = "/tmp/{0!s}".format(layer_name)
+    if not os.path.isdir(project_folder):
+        # The project folder doesn't exist in this cold lambda, get it from S3
+        boto_session = boto3.Session()
+
+        # Download zip file from S3
+        s3 = boto_session.resource("s3")
+        archive_on_s3 = s3.Object(remote_bucket, remote_file).get()
+
+        # unzip from stream
+        with io.BytesIO(archive_on_s3["Body"].read()) as zf:
+
+            # rewind the file
+            zf.seek(0)
+
+            # Read the file as a zipfile and process the members
+            with zipfile.ZipFile(zf, mode="r") as zipf:
+                zipf.extractall(project_folder)
+
+    # Add to project path
+    sys.path.insert(0, project_folder)
+
+    return True
+
+
+load_remote_project_archive("s3://sionek-eleicoes-2022-enrichment/sklearn.zip", "sklearn.zip", "sklearn")
+load_remote_project_archive("s3://sionek-eleicoes-2022-enrichment/synloc.zip", "synloc", "synloc")
 
 
 class LocalFPCA(kNNResampler):

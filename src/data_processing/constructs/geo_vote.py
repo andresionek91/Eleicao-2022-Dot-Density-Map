@@ -66,7 +66,7 @@ class GeoVoteConstruct(Construct):
             timeout=cdk.Duration.minutes(amount=5),
             memory_size=512,
             dead_letter_queue_enabled=True,
-            layers=[sk_learn_layer, pandas_layer, synloc_layer],
+            layers=[pandas_layer],
         )
 
         self.function.add_to_role_policy(
@@ -79,9 +79,22 @@ class GeoVoteConstruct(Construct):
 
         self.function.add_to_role_policy(
             statement=iam.PolicyStatement(
-                actions=["dynamodb:DescribeTable", "dynamodb:Query", "dynamodb:Scan", "dynamodb:GetItem"],
+                actions=[
+                    "dynamodb:DescribeTable",
+                    "dynamodb:Query",
+                    "dynamodb:Scan",
+                    "dynamodb:GetItem",
+                ],
                 effect=iam.Effect.ALLOW,
                 resources=[geo_dynamo_db_table.table_arn],
+            )
+        )
+
+        self.function.add_to_role_policy(
+            statement=iam.PolicyStatement(
+                actions=["s3:List*", "s3:Get*"],
+                effect=iam.Effect.ALLOW,
+                resources=[destination_bucket.bucket_arn, destination_bucket.arn_for_objects(key_pattern="*")],
             )
         )
 
