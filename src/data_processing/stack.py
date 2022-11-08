@@ -25,14 +25,23 @@ class DataProcessingStack(cdk.Stack):
         )
 
         self.address_enrichment = AddressEnrichmentConstruct(
-            scope=self, id="EnrichAddresses", destination_bucket=self.bucket
+            scope=self,
+            id="EnrichAddresses",
+            destination_bucket=self.bucket,
         )
 
         self.athena = AthenaConstruct(scope=self, id="Athena")
         self.dynamodb = DynamoDbConstruct(scope=self, id="DynamoDb")
-        self.glue = GlueConstruct(scope=self, id="EleicoesGlue", source_bucket=self.bucket)
+        self.glue = GlueConstruct(
+            scope=self,
+            id="EleicoesGlue",
+            source_bucket=self.bucket,
+        )
         self.geo_vote = GeoVoteConstruct(
-            scope=self, id="EleicoesGlue", destination_bucket=self.bucket, geo_dynamo_db_table=self.dynamodb.table
+            scope=self,
+            id="GeoVotes",
+            destination_bucket=self.bucket,
+            geo_dynamo_db_table=self.dynamodb.table,
         )
         # Add tags to everything in this stack
         cdk.Tags.of(self).add(key="stack", value=self.stack_name)
