@@ -37,17 +37,21 @@ class LocalFPCA(kNNResampler):
 
 
 def generate_syntethic_geo_data(df_sample, size, K):
+    logger.info(f"Generating synthetic data size: {size}")
     resampler = LocalFPCA(data=df_sample, K=K)
     return resampler.fit(size)
 
 
 class Event(BaseModel):
     cep: str
+    turno: int
     votos: int
     numero_candidato: int
 
 
 def get_geo_data(cep):
+    logger.info(f"getting data from dynamo CEP: {cep}")
+
     devices_table = dynamodb.Table("geo_ceps")
     response = devices_table.get_item(Key={"cep": cep})
     item = ast.literal_eval(response.get("Item", {}).get("geo", "[]"))
@@ -58,6 +62,7 @@ def get_geo_data(cep):
 
     items = []
     for idx in range(10):
+        logger.info(f"3 DIGITS: getting data from dynamo CEP: {cep[:-1]}{idx}")
         response = devices_table.get_item(Key={"cep": f"{cep[:-1]}{idx}"})
         item = ast.literal_eval(response.get("Item", {}).get("geo", "[]"))
         items += item
@@ -68,6 +73,7 @@ def get_geo_data(cep):
 
     items = []
     for idx in range(100):
+        logger.info(f"2 DIGITS: getting data from dynamo CEP: {cep[:-2]}{idx}")
         response = devices_table.get_item(Key={"cep": f"{cep[:-2]}{str(idx).zfill(2)}"})
         item = ast.literal_eval(response.get("Item", {}).get("geo", "[]"))
         items += item
@@ -88,10 +94,11 @@ def handler(event: Event, context: LambdaContext) -> None:
 
     synth_data["cep"] = event.cep
     synth_data["numero_candidato"] = event.numero_candidato
-    synth_data = synth_data[["cep", "numero_candidato", "latitude", "longitude"]]
+    synth_data["turno"] = event.turno
+    synth_data = synth_data[["cep", "turno", "numero_candidato", "latitude", "longitude"]]
 
     records = synth_data.to_dict("records")
-    logger.info(f"records: {records}")
+    logger.info(f"first 5 records: {records[:4]}...")
 
     data = ""
     for record in records:
