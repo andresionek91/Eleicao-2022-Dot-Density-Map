@@ -26,8 +26,8 @@ class GeoVoteConstruct(Construct):
             buffering_interval=cdk.Duration.minutes(amount=10),
             buffering_size=cdk.Size.mebibytes(amount=20),
             compression=destinations.Compression.GZIP,
-            data_output_prefix="geo_vote/date=!{timestamp:yyyy}-!{timestamp:MM}-!{timestamp:dd}/",
-            error_output_prefix="error/geo_vote/",
+            data_output_prefix="geo_vote_new/date=!{timestamp:yyyy}-!{timestamp:MM}-!{timestamp:dd}/",
+            error_output_prefix="error/geo_vote_new/",
             logging=True,
         )
 
