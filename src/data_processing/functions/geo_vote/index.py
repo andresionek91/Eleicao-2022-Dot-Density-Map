@@ -3,6 +3,8 @@ import os
 import sys
 import zipfile
 
+import boto3
+
 
 def load_remote_project_archive(remote_bucket, remote_file, layer_name):
 
@@ -38,7 +40,6 @@ load_remote_project_archive("sionek-eleicoes-2022-enrichment", "lambda_layer.zip
 import json
 import logging
 
-import boto3
 import pandas as pd
 
 from aws_lambda_powertools import Logger
@@ -105,11 +106,12 @@ def handler(event: Event, context: LambdaContext) -> None:
     synth_data = synth_data[["cep", "numero_candidato", "latitude", "longitude"]]
 
     records = synth_data.to_dict("records")
+    logger.info(f"records: {records}")
 
     data = ""
     for record in records:
         data += json.dumps(record) + "\n"
-    print(data)
+
     logger.info("Putting batch to firehose")
     firehose.put_record_batch(
         DeliveryStreamName=os.environ["delivery_stream_name"],
