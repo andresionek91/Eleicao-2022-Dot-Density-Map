@@ -48,6 +48,7 @@ class GeoVoteConstruct(Construct):
             timeout=cdk.Duration.minutes(amount=5),
             memory_size=512,
             dead_letter_queue_enabled=True,
+            ephemeral_storage_size=cdk.Size.gibibytes(amount=2),
         )
 
         self.function.add_to_role_policy(

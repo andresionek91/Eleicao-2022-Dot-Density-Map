@@ -35,8 +35,8 @@ def load_remote_project_archive(remote_bucket, remote_file, layer_name):
 
 
 load_remote_project_archive("sionek-eleicoes-2022-enrichment", "sklearn.zip", "sklearn")
-load_remote_project_archive("sionek-eleicoes-2022-enrichment", "synloc.zip", "synloc")
 load_remote_project_archive("sionek-eleicoes-2022-enrichment", "pandas.zip", "pandas")
+load_remote_project_archive("sionek-eleicoes-2022-enrichment", "synloc.zip", "synloc")
 
 import json
 import logging
@@ -48,9 +48,7 @@ from aws_lambda_powertools import Tracer
 from aws_lambda_powertools.utilities.parser import BaseModel
 from aws_lambda_powertools.utilities.parser import event_parser
 from aws_lambda_powertools.utilities.typing import LambdaContext
-from synloc import kNNResampler
-from synloc.tools import stochastic_rounder
-from synthia import FPCADataGenerator
+from synloc import LocalGaussianCopula
 
 
 logger = Logger()
@@ -61,18 +59,8 @@ dynamodb = boto3.resource("dynamodb")
 firehose = boto3.resource("firehose")
 
 
-class LocalFPCA(kNNResampler):
-    def __init__(self, data, K=30, normalize=True, clipping=True, Args_NearestNeighbors={}):
-        super().__init__(data, K, normalize, clipping, Args_NearestNeighbors, method=self.method)
-
-    def method(self, data):
-        generator = FPCADataGenerator()
-        generator.fit(data, n_fpca_components=2)
-        return generator.generate(1)[0]
-
-
 def generate_syntethic_geo_data(df_sample, size, K):
-    resampler = LocalFPCA(data=df_sample, K=K)
+    resampler = LocalGaussianCopula(data=df_sample, K=K)
     return resampler.fit(size)
 
 
