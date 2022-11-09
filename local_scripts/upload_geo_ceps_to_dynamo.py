@@ -2,6 +2,11 @@ import boto3
 import pandas as pd
 
 
+pd.set_option("display.max_rows", 500)
+pd.set_option("display.max_columns", 50)
+pd.set_option("display.width", 1000)
+
+
 def load_data(record, dynamodb=None):
     dynamodb = boto3.resource("dynamodb")
 
@@ -25,8 +30,9 @@ if __name__ == "__main__":
         },
     )
     geo_ceps_df = geo_ceps_df.dropna()
-    geo_ceps_df["cep"] = geo_ceps_df["cep"].str[:-4]
+    geo_ceps_df["cep"] = geo_ceps_df["cep"].str[:-5]
     group_cep = geo_ceps_df.groupby("cep")
+
     for group in group_cep:
 
         record = {

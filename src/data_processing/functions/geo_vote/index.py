@@ -1,3 +1,4 @@
+import ast
 import json
 import logging
 import os
@@ -10,6 +11,8 @@ from aws_lambda_powertools import Tracer
 from aws_lambda_powertools.utilities.parser import BaseModel
 from aws_lambda_powertools.utilities.parser import event_parser
 from aws_lambda_powertools.utilities.typing import LambdaContext
+from boto3.dynamodb.conditions import Attr
+from boto3.dynamodb.conditions import Key
 from synloc import kNNResampler
 from synloc.tools import stochastic_rounder
 from synthia import FPCADataGenerator
@@ -46,9 +49,30 @@ class Event(BaseModel):
 
 def get_geo_data(cep):
     devices_table = dynamodb.Table("geo_ceps")
-    item = devices_table.get_item(Key={"cep": int(cep)})["Item"]
-    df = pd.read_json(item["geo"])
+    response = devices_table.get_item(Key={"cep": cep})
+    item = ast.literal_eval(response.get("Item", {}).get("geo", "[]"))
 
+    if len(item) > 30:
+        df = pd.read_json(json.dumps(item))
+        return df
+
+    items = []
+    for idx in range(10):
+        response = devices_table.get_item(Key={"cep": f"{cep[:-1]}{idx}"})
+        item = ast.literal_eval(response.get("Item", {}).get("geo", "[]"))
+        items += item
+
+    if len(items) > 30:
+        df = pd.read_json(json.dumps(items))
+        return df
+
+    items = []
+    for idx in range(100):
+        response = devices_table.get_item(Key={"cep": f"{cep[:-2]}{str(idx).zfill(2)}"})
+        item = ast.literal_eval(response.get("Item", {}).get("geo", "[]"))
+        items += item
+
+    df = pd.read_json(json.dumps(items))
     return df
 
 
@@ -60,7 +84,7 @@ def handler(event: Event, context: LambdaContext) -> None:
 
     logger.info(f"Processing event: {event}")
 
-    synth_data = generate_syntethic_geo_data(get_geo_data(event.cep), size=120, K=10)
+    synth_data = generate_syntethic_geo_data(get_geo_data(event.cep), size=event.votos, K=8)
 
     synth_data["cep"] = event.cep
     synth_data["numero_candidato"] = event.numero_candidato
