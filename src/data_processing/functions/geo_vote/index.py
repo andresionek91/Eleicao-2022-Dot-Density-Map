@@ -1,4 +1,5 @@
 import io
+import os
 import sys
 import zipfile
 
@@ -39,7 +40,6 @@ load_remote_project_archive("s3://sionek-eleicoes-2022-enrichment/pandas.zip", "
 
 import json
 import logging
-import os
 
 import pandas as pd
 
