@@ -1,29 +1,8 @@
 import io
-import json
-import logging
-import os
 import sys
 import zipfile
 
 import boto3
-import pandas as pd
-
-from aws_lambda_powertools import Logger
-from aws_lambda_powertools import Tracer
-from aws_lambda_powertools.utilities.parser import BaseModel
-from aws_lambda_powertools.utilities.parser import event_parser
-from aws_lambda_powertools.utilities.typing import LambdaContext
-from synloc import kNNResampler
-from synloc.tools import stochastic_rounder
-from synthia import FPCADataGenerator
-
-
-logger = Logger()
-tracer = Tracer()
-logging.basicConfig(level=logging.INFO)
-
-dynamodb = boto3.resource("dynamodb")
-firehose = boto3.resource("firehose")
 
 
 def load_remote_project_archive(remote_bucket, remote_file, layer_name):
@@ -57,6 +36,29 @@ def load_remote_project_archive(remote_bucket, remote_file, layer_name):
 load_remote_project_archive("s3://sionek-eleicoes-2022-enrichment/sklearn.zip", "sklearn.zip", "sklearn")
 load_remote_project_archive("s3://sionek-eleicoes-2022-enrichment/synloc.zip", "synloc.zip", "synloc")
 load_remote_project_archive("s3://sionek-eleicoes-2022-enrichment/pandas.zip", "pandas.zip", "pandas")
+
+import json
+import logging
+import os
+
+import pandas as pd
+
+from aws_lambda_powertools import Logger
+from aws_lambda_powertools import Tracer
+from aws_lambda_powertools.utilities.parser import BaseModel
+from aws_lambda_powertools.utilities.parser import event_parser
+from aws_lambda_powertools.utilities.typing import LambdaContext
+from synloc import kNNResampler
+from synloc.tools import stochastic_rounder
+from synthia import FPCADataGenerator
+
+
+logger = Logger()
+tracer = Tracer()
+logging.basicConfig(level=logging.INFO)
+
+dynamodb = boto3.resource("dynamodb")
+firehose = boto3.resource("firehose")
 
 
 class LocalFPCA(kNNResampler):
