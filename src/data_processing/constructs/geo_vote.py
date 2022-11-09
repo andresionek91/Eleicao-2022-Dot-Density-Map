@@ -5,7 +5,6 @@ from aws_cdk import aws_iam as iam
 from aws_cdk import aws_kinesisfirehose_alpha as firehose
 from aws_cdk import aws_kinesisfirehose_destinations_alpha as destinations
 from aws_cdk import aws_lambda as _lambda
-from aws_cdk import aws_lambda_python_alpha as lambda_python
 from aws_cdk import aws_s3 as s3
 from constructs import Construct
 
@@ -38,12 +37,10 @@ class GeoVoteConstruct(Construct):
             destinations=[destination],
         )
 
-        self.function = lambda_python.PythonFunction(
+        self.function = _lambda.DockerImageFunction(
             scope=self,
             id="EnrichAddressesFunction",
-            runtime=_lambda.Runtime.PYTHON_3_9,
-            handler="handler",
-            entry="src/data_processing/functions/geo_vote",
+            code=_lambda.DockerImageCode.from_image_asset("src/data_processing/functions/geo_vote"),
             environment={"delivery_stream_name": self.delivery_stream.delivery_stream_name},
             timeout=cdk.Duration.minutes(amount=5),
             memory_size=512,

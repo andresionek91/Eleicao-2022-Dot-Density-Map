@@ -76,8 +76,6 @@ def generate_syntethic_geo_data(df_sample, size, K):
 
 
 class Event(BaseModel):
-    """Conjunto de secoes"""
-
     cep: str
     votos: int
     numero_candidato: int
