@@ -11,8 +11,6 @@ from aws_lambda_powertools import Tracer
 from aws_lambda_powertools.utilities.parser import BaseModel
 from aws_lambda_powertools.utilities.parser import event_parser
 from aws_lambda_powertools.utilities.typing import LambdaContext
-from boto3.dynamodb.conditions import Attr
-from boto3.dynamodb.conditions import Key
 from synloc import kNNResampler
 from synloc.tools import stochastic_rounder
 from synthia import FPCADataGenerator
