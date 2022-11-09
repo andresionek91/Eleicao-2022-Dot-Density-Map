@@ -42,10 +42,10 @@ class GeoVoteConstruct(Construct):
             id="Function",
             code=_lambda.DockerImageCode.from_image_asset("src/data_processing/functions/geo_vote"),
             environment={"delivery_stream_name": self.delivery_stream.delivery_stream_name},
-            timeout=cdk.Duration.minutes(amount=5),
+            timeout=cdk.Duration.minutes(amount=14),
             memory_size=512,
             dead_letter_queue_enabled=True,
-            ephemeral_storage_size=cdk.Size.gibibytes(amount=2),
+            ephemeral_storage_size=cdk.Size.gibibytes(amount=1),
         )
 
         self.function.add_to_role_policy(

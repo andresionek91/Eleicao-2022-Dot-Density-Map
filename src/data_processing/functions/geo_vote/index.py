@@ -82,6 +82,13 @@ def get_geo_data(cep):
     return df
 
 
+def divide_chunks(l, n):
+
+    # looping till length l
+    for i in range(0, len(l), n):
+        yield l[i : i + n]
+
+
 @logger.inject_lambda_context
 @tracer.capture_lambda_handler
 @event_parser(model=Event)
@@ -100,14 +107,18 @@ def handler(event: Event, context: LambdaContext) -> None:
     records = synth_data.to_dict("records")
     logger.info(f"first 5 records: {records[:4]}...")
 
-    data = ""
-    for record in records:
-        data += json.dumps(record) + "\n"
+    chunks = divide_chunks(records, 500)
 
-    logger.info("Putting batch to firehose")
-    firehose.put_record_batch(
-        DeliveryStreamName=os.environ["delivery_stream_name"],
-        Records=[
-            {"Data": data.encode("utf-8")},
-        ],
-    )
+    for idx, chunk in enumerate(chunks):
+        logger.info(f"Putting batch to firehose. {idx*500} of {event.votos} ")
+
+        data = ""
+        for record in chunk:
+            data += json.dumps(record) + "\n"
+
+        firehose.put_record_batch(
+            DeliveryStreamName=os.environ["delivery_stream_name"],
+            Records=[
+                {"Data": data.encode("utf-8")},
+            ],
+        )
