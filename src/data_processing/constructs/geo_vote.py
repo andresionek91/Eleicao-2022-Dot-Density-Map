@@ -33,13 +33,13 @@ class GeoVoteConstruct(Construct):
 
         self.delivery_stream = firehose.DeliveryStream(
             scope=self,
-            id="GeoVoteFirehose",
+            id="Firehose",
             destinations=[destination],
         )
 
         self.function = _lambda.DockerImageFunction(
             scope=self,
-            id="EnrichAddressesFunction",
+            id="Function",
             code=_lambda.DockerImageCode.from_image_asset("src/data_processing/functions/geo_vote"),
             environment={"delivery_stream_name": self.delivery_stream.delivery_stream_name},
             timeout=cdk.Duration.minutes(amount=5),
